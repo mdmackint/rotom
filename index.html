@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" class="flex h-screen justify-center items-center">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="global.css">
+        <title>RotomDex</title>
+    </head>
+    <body class="bg-red-50 p-20 font-sans">
+        <h1 class="text-6xl font-bold text-center text-red-950 text-shadow-lg">RotomDex</h1>
+        <br>
+        <div id="chips" class="text-center">
+            <button class="text-xl rounded-xl p-1.5 mx-1 mb-2.5 shadow-red-900 shadow-md h-auto text-red-950 w-auto bg-red-100 inline-block hover:shadow-sm active:shadow-none active:bg-red-200 transition-all" id="pokemon-button"><h2>
+                <svg
+                    class="inline max-h-4 max-w-4 ml-1 mr-1.5 mb-1"
+                    width="111.35847"
+                    height="111.35847"
+                    viewBox="0 0 111.35847 111.35847"
+                    version="1.1"
+                    id="svg1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:svg="http://www.w3.org/2000/svg">
+                    <defs
+                        id="defs1" />
+                    <g
+                        id="layer1"
+                        transform="translate(-4.3207649,-4.3207635)">
+                        <g
+                        id="g3"
+                        transform="translate(-1.6792273,-1.6792286)">
+                        <ellipse
+                            style="fill:none;stroke:#000000;stroke-width:11.9916;stroke-dasharray:none;stroke-opacity:1"
+                            id="path1"
+                            cx="47.341278"
+                            cy="48.520206"
+                            rx="35.345486"
+                            ry="36.524414" />
+                        <rect
+                            style="fill:none;stroke:#000000;stroke-width:13.0749;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
+                            id="rect1"
+                            width="1.9528793"
+                            height="50.774807"
+                            x="-0.9764415"
+                            y="104.97372"
+                            transform="rotate(-45)" />
+                        </g>
+                    </g>
+                </svg>PokéSearch</h2></button>
+            <button class="secondaryButton text-xl rounded-xl p-1.5 mx-1 mb-2.5 text-red-950 disabled:text-gray-950 shadow-red-900 disabled:shadow-gray-900 shadow-md h-auto w-auto bg-red-100 inline-block hover:shadow-sm active:shadow-none active:bg-red-200 transition-all disabled:bg-gray-200" disabled id="camera"><h2>Camera</h2></button>
+            <button class="secondaryButton text-xl rounded-xl p-1.5 mx-1 mb-2.5 text-red-950 disabled:text-gray-950 shadow-red-900 disabled:shadow-gray-900 shadow-md h-auto w-auto bg-red-100 inline-block hover:shadow-sm active:shadow-none active:bg-red-200 transition-all disabled:bg-gray-200" disabled id="research"><h2>Research</h2></button>
+        </div>
+        <p class="text-center text-2xl italic font-bold h-0 text-red-950 transition-all" id="pokemon"></p>
+        <script>
+            function rand(max) {
+                return Math.floor(Math.random() * max)
+            }
+            function toTitleCase(str) {
+                return str.replace(
+                    /\w\S*/g,
+                    text => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase()
+                )
+            }
+            var firstPokemon = true
+            var lastID = 0
+            var lastPokemon
+            var pokedex
+            function fetchPokemonName() {
+                let id = rand(1025) + 1
+                lastID = id
+                fetch("https://pokeapi.co/api/v2/pokemon/" + id).then(function(r) {
+                    r.json().then(function(j) {
+                        let name = j.species.name
+                        let p = document.querySelector("#pokemon")
+                        p.classList.replace("text-lg", "text-2xl")
+                        p.innerHTML = toTitleCase(name)
+                        p.style.height = "1em"
+                        if (firstPokemon) {
+                            document.querySelectorAll(".secondaryButton").forEach(function(e) {
+                                e.disabled = false
+                            })
+                            firstPokemon = false
+                        }
+                        lastPokemon = j
+                    })
+                })
+                fetch("https://pokeapi.co/api/v2/pokedex/1").then(function(p) {
+                    p.json().then(function(j) {
+                        pokedex = j
+                    })
+                })
+            }
+            function fetchPokemonIcon() {
+                if (lastID == 0) {
+                    return
+                }
+                let j = lastPokemon
+                let shiny = rand(100) == 0
+                let spriteURI
+                if (shiny) {
+                    spriteURI = j.sprites.front_shiny
+                } else {
+                    spriteURI = j.sprites.front_default
+                }
+                let p = document.getElementById("pokemon")
+                fetch(spriteURI).then(function(r) {
+                    r.blob().then(function(b) {
+                        p.innerHTML = ""
+                        p.style.height = "auto"
+                        let img = document.createElement("img")
+                        img.src = URL.createObjectURL(b)
+                        img.className = "mx-auto"
+                        p.append(img)
+                    })
+                })
+            }
+            function fetchPokedexData() {
+                if (lastID == 0) {
+                    return
+                }
+                let pokemon = lastPokemon
+                let str = "This Pokémon"
+                switch (pokemon.types.length) {
+                    case 1: str += " is " +toTitleCase(pokemon.types[0].type.name) + " type."; break
+                    case 2: str += " is " +toTitleCase(pokemon.types[0].type.name) + " / " + toTitleCase(pokemon.types[1].type.name) + " type."; break
+                    default: str += "'s type is unknown."; break
+                }
+                let p = document.getElementById("pokemon")
+                p.classList.replace("text-2xl", "text-lg")
+                p.innerHTML = str
+            }
+            document.querySelector("#pokemon-button").addEventListener('click', fetchPokemonName)
+            document.querySelector("#camera").addEventListener('click', fetchPokemonIcon)
+            document.querySelector("#research").addEventListener('click', fetchPokedexData)
+        </script>
+    </body>
+</html>
