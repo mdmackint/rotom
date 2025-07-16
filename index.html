@@ -46,8 +46,8 @@
                         </g>
                     </g>
                 </svg>PokéSearch</h2></button>
-            <button class="secondaryButton text-xl rounded-xl p-1.5 mx-1 mb-2.5 text-red-950 disabled:text-gray-950 shadow-red-900 disabled:shadow-gray-900 shadow-md h-auto w-auto bg-red-100 inline-block hover:shadow-sm active:shadow-none active:bg-red-200 transition-all disabled:bg-gray-200" disabled id="camera"><h2>Camera</h2></button>
-            <button class="secondaryButton text-xl rounded-xl p-1.5 mx-1 mb-2.5 text-red-950 disabled:text-gray-950 shadow-red-900 disabled:shadow-gray-900 shadow-md h-auto w-auto bg-red-100 inline-block hover:shadow-sm active:shadow-none active:bg-red-200 transition-all disabled:bg-gray-200" disabled id="research"><h2>Research</h2></button>
+            <button class="secondaryButton text-xl rounded-xl p-1.5 mx-1 mb-2.5 text-red-950 disabled:text-gray-950 shadow-red-900 disabled:shadow-gray-900 disabled:shadow-inner shadow-md h-auto w-auto bg-red-100 inline-block hover:shadow-sm active:shadow-none active:bg-red-200 transition-all disabled:bg-gray-200" disabled id="camera"><h2>Camera</h2></button>
+            <button class="secondaryButton text-xl rounded-xl p-1.5 mx-1 mb-2.5 text-red-950 disabled:text-gray-950 shadow-red-900 disabled:shadow-gray-900 disabled:shadow-inner shadow-md h-auto w-auto bg-red-100 inline-block hover:shadow-sm active:shadow-none active:bg-red-200 transition-all disabled:bg-gray-200" disabled id="research"><h2>Research</h2></button>
         </div>
         <p class="text-center text-2xl italic font-bold h-0 text-red-950 transition-all" id="pokemon"></p>
         <script>
@@ -125,6 +125,7 @@
                     default: str += "'s type is unknown."; break
                 }
                 let p = document.getElementById("pokemon")
+                p.innerHTML = ""
                 p.classList.replace("text-2xl", "text-lg")
                 p.innerHTML = str
             }
